@@ -1,5 +1,5 @@
 FROM python:3.8
-COPY . ./opt/app
-RUN pip3.8 install --no-cache-dir -r /opt/app/requirements.txt
+COPY . /opt/
+RUN pip3.8 install --no-cache-dir -r /opt/requirements.txt
 
-CMD [ "python3.8", "/opt/app/bot.py" ]
+CMD [ "python3.8", "/opt/bot.py" ]
