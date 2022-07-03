@@ -24,19 +24,21 @@ docker run -d -v {что монтировать}:{/opt/(audio, images, spb)} {im
 2. Наполнить файл:
 
 [Unit]
-Description=Moderatorbot Service
+Description=ModeratorBot Service
 After=docker.service
 Requires=docker.service
 
 [Service]
 TimeoutStartSec=0
 Restart=always
+ExecStartPre=-/usr/bin/docker exec %n stop
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull chupikoff/moderator:latest
 ExecStart=/usr/bin/docker run --rm --name %n \
-    -v {что монтировать}:/opt/images \
-    -v {что монтировать}:/opt/spb \
-    -v {что монтировать}:/opt/audio \
-    {image_name:version}
-
+    -v /home/hes/images:/opt/images \
+    -v /home/hes/spb:/opt/spb \
+    -v /home/hes/audio:/opt/audio \
+    chupikoff/moderator:latest
 [Install]
 WantedBy=default.target
 
