@@ -1,7 +1,7 @@
 from glob import glob
 from random import randint, choice
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import settings as settings
+import settings1 as settings
 
 def greet_user(update, context):
     update.message.reply_text("Чё надо")
