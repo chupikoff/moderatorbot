@@ -1,5 +1,9 @@
 FROM python:3.8
-COPY . /opt/
-RUN pip3.8 install --no-cache-dir -r /opt/requirements.txt
+RUN mkdir -p /opt/app
+WORKDIR /opt/app
+COPY bot.py /opt/app
+COPY requirements.txt /opt/app/
+COPY settings.py /opt/app/
+RUN pip install --no-cache-dir -r requirements.txt
 
-CMD [ "python3.8", "/opt/bot.py" ]
+ENTRYPOINT [ "python", "bot.py" ]
