@@ -1,6 +1,2 @@
 settings.py
 settings1.py
-*.log
-env/
-.DS_Store
-__pycache__/
