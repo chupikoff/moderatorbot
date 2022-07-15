@@ -3,8 +3,7 @@ RUN mkdir -p /opt/app/
 COPY requirements.txt /tmp
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 WORKDIR /opt/app
-RUN rm -rf /tmp/* \
-    && rm -rf /tmp/.cache/pip/*
+RUN rm -rf /tmp/*
 COPY bot.py /opt/app/
 
 COPY settings.py /opt/app/
