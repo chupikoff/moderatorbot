@@ -1,12 +1,7 @@
 FROM python:3.8-slim
-RUN mkdir -p /opt/app/
-COPY requirements.txt /tmp
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
-WORKDIR /opt/app
-RUN rm -rf /tmp/*
-COPY bot.py /opt/app/
+COPY bot.py /opt/
+COPY settings.py /opt/
+COPY requirements.txt /opt/
+RUN pip3.8 install --no-cache-dir -r /opt/requirements.txt
 
-COPY settings.py /opt/app/
-
-
-ENTRYPOINT [ "python", "bot.py" ]
+CMD [ "python3.8", "/opt/bot.py" ]
