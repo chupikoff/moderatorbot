@@ -24,7 +24,7 @@ docker run -d -v {что монтировать}:{/opt/(audio, images, spb)} {im
 2. Наполнить файл:
 
 [Unit]
-Description=ModeratorBot Service
+Description=Moderator Service
 After=docker.service
 Requires=docker.service
 
@@ -37,8 +37,8 @@ ExecStartPre=/usr/bin/docker pull chupikoff/moderator:latest
 ExecStart=/usr/bin/docker run --rm --name %n \
     -v /home/hes/images:/opt/images \
     -v /home/hes/spb:/opt/spb \
-    -v /home/hes/audio:/opt/audio \
     chupikoff/moderator:latest
+
 [Install]
 WantedBy=default.target
 
