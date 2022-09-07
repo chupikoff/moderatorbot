@@ -22,13 +22,13 @@ def send_random_audio(update, context):
     random_audio_list = glob('opt/audio/*.mp3')
     mp3_filename = choice(random_audio_list)
     chat_id = update.effective_chat.id
-    context.bot.send_audio(chat_id=chat_id, audio=open(mp3_filename, 'rb'))
+    context.bot.send_audio(chat_id=chat_id, audio=open(mp3_filename, 'rb'))    
+
 
 def main():
 
     mybot = Updater(settings.API_KEY, use_context=True)
     dp = mybot.dispatcher
-    jq = mybot.job_queue
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler("image", send_random_image))
     dp.add_handler(CommandHandler("audio", send_random_audio))
