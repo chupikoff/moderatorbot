@@ -22,7 +22,19 @@ def send_random_audio(update, context):
     random_audio_list = glob('opt/audio/*.mp3')
     mp3_filename = choice(random_audio_list)
     chat_id = update.effective_chat.id
-    context.bot.send_audio(chat_id=chat_id, audio=open(mp3_filename, 'rb'))    
+    context.bot.send_audio(chat_id=chat_id, audio=open(mp3_filename, 'rb'))
+
+def send_random_diaz(update, context):
+    random_diaz_list = glob('opt/diaz/*.mp4')
+    diaz_filename = choice(random_diaz_list)
+    chat_id = update.effective_chat.id
+    context.bot.send_video(chat_id=chat_id, video=open(diaz_filename, 'rb'))
+    
+def send_random_tony(update, context):
+    random_tony_list = glob('opt/tony/*.mp4')
+    tony_filename = choice(random_tony_list)
+    chat_id = update.effective_chat.id
+    context.bot.send_video(chat_id=chat_id, video=open(tony_filename, 'rb'))            
 
 
 def main():
