@@ -45,6 +45,8 @@ def main():
     dp.add_handler(CommandHandler("image", send_random_image))
     dp.add_handler(CommandHandler("audio", send_random_audio))
     dp.add_handler(CommandHandler("spb", send_random_spb))
+    dp.add_handler(CommandHandler("diaz", send_random_diaz))
+    dp.add_handler(CommandHandler("tony", send_random_tony))
     mybot.start_polling()
 
     mybot.idle()
