@@ -1,7 +1,7 @@
 import sqlite3
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-import settings as settings
+import settings_testing as settings
 
 # Функция для открытия подключения к базе данных
 def open_db_connection():
