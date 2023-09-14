@@ -1,4 +1,5 @@
 FROM python:3.8-slim
+COPY word_count.db /opt/
 COPY bot.py /opt/
 COPY settings.py /opt/
 COPY requirements.txt /opt/

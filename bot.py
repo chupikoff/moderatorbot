@@ -1,41 +1,77 @@
-from glob import glob
-from random import choice
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import sqlite3
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 import settings as settings
 
-def greet_user(update, context):
-    update.message.reply_text("Я живий")
+# Функция для открытия подключения к базе данных
+def open_db_connection():
+    conn = sqlite3.connect('word_count.db')
+    return conn
 
-def send_random_spb(update, context):
-    random_spb_list = glob('opt/spb/*.mp3')
-    spb_filename = choice(random_spb_list)
-    chat_id = update.effective_chat.id
-    context.bot.send_audio(chat_id=chat_id, audio=open(spb_filename, 'rb'))
+# Функция для создания таблицы (если ее нет)
+def create_table():
+    conn = open_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS word_count
+                  (user_id INTEGER PRIMARY KEY, user_name TEXT, word_count INTEGER)''')
+    conn.commit()
+    conn.close()
+def count_words(update, context):
+    user_id = update.message.from_user.id
+    user_name = update.message.from_user.username
+    
+    # Разбиваем текст сообщения на слова и считаем их количество
+    word_count = len(update.message.text.split())
+    
+    # Обновляем счетчик слов в базе данных
+    current_word_count = get_word_count(user_id)
+    update_word_count(user_id, user_name, current_word_count + word_count)
+# Остальной код остается без изменений
+def show_stats(update, context):
+    conn = open_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT user_id, user_name, word_count FROM word_count")
+    results = cursor.fetchall()
+    conn.close()  # Закрываем соединение после использования
+    
+    stats_text = "Статистика пользователей:\n"
+    for user_id, user_name, word_count in results:
+        stats_text += f"{user_name} (ID: {user_id}): {word_count} слов\n"
+    
+    update.message.reply_text(stats_text)
+def get_word_count(user_id):
+    conn = open_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT word_count FROM word_count WHERE user_id=?", (user_id,))
+    result = cursor.fetchone()
+    conn.close()
+    
+    if result:
+        return result[0]
+    else:
+        return 0  # Возвращаем 0, если запись не найдена
 
-def send_random_image(update, context):
-    random_photos_list = glob('opt/images/*.jpg')
-    pic_filename = choice(random_photos_list)
-    chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id=chat_id, photo=open(pic_filename, 'rb'))
-
-def greet_user_after_message(update, context):
-    # Проверяем ID пользователя
-    if update.message.from_user.id == 123456789:  # change id
-        update.message.reply_text("Це реплай користувачу @chupikoff")
-
+def update_word_count(user_id, user_name, new_word_count):
+    conn = open_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("REPLACE INTO word_count (user_id, user_name, word_count) VALUES (?, ?, ?)", (user_id, user_name, new_word_count))
+    conn.commit()
+    conn.close()
 def main():
+    create_table()  # Создаем таблицу (если ее нет)
+    
     mybot = Updater(settings.API_KEY, use_context=True)
     dp = mybot.dispatcher
-    dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(CommandHandler("image", send_random_image))
-    dp.add_handler(CommandHandler("spb", send_random_spb))
     
-    # Обробник повідомлень
-    dp.add_handler(MessageHandler(Filters.text, greet_user_after_message))
+    # Добавляем обработчик сообщений для подсчета слов
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, count_words))
+    
+    # Добавляем обработчик команды /stats
+    dp.add_handler(CommandHandler("stats", show_stats))
     
     mybot.start_polling()
     mybot.idle()
 
 if __name__ == "__main__":
     main()
+
