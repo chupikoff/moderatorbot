@@ -21,7 +21,7 @@ def send_random_image(update, context):
 
 def greet_user_after_message(update, context):
     # Проверяем ID пользователя
-    if update.message.from_user.id == 123456789:  # change id
+    if update.message.from_user.id == 211139051:  # change id
         update.message.reply_text("Це реплай користувачу @chupikoff")
 
 def main():
