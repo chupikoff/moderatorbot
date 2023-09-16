@@ -1,6 +1,6 @@
 import sqlite3
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-
+from telegram import Update
 import settings_testing as settings
 
 # Функция для открытия подключения к базе данных
@@ -16,16 +16,23 @@ def create_table():
                   (user_id INTEGER PRIMARY KEY, user_name TEXT, word_count INTEGER)''')
     conn.commit()
     conn.close()
-def count_words(update, context):
-    user_id = update.message.from_user.id
-    user_name = update.message.from_user.username
+
+def count_words(update: Update, context: CallbackContext):
+    user = update.message.from_user
+    user_id = user.id
+    user_name = user.username
+
+    # Если у пользователя нет username, попробуем получить имя и фамилию из профиля
+    if not user_name:
+        user_name = f"{user.first_name} {user.last_name}"
     
     # Разбиваем текст сообщения на слова и считаем их количество
     word_count = len(update.message.text.split())
-    
+
     # Обновляем счетчик слов в базе данных
     current_word_count = get_word_count(user_id)
     update_word_count(user_id, user_name, current_word_count + word_count)
+
 # Остальной код остается без изменений
 def show_stats(update, context):
     conn = open_db_connection()
